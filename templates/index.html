@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Hive</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<style>
+
+
+    body
+    {
+        background-color: #f6e294;
+        font-family: 'Roboto', sans-serif;
+
+    }
+
+</style>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="height: 15vh">
+    <a class="navbar-brand" href="#"><img src="../static/HIVE-LOGO.png" style="max-height: 15vh; max-width: 15vh;"></a>
+    {# <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>#}
+
+    {#<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Apps</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Account</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Logout</a>
+          </li>
+        </ul>
+    </div>#}
+</nav>
+
+<div class="container" style="background-color: #f6e294;">
+    <div class="row">
+
+        <div class="col-1"></div>
+
+        <div class="col-10" style="height: 45vh; background-color: white; text-align: center;" id="urlholder">
+            <ul class="list-group" style="max-height: 100%; overflow-y: scroll; text-align: left;">
+                {{ listed|safe }}
+            </ul>
+
+
+        </div>
+
+        <div class="col-1"></div>
+
+        <div class="col-1"></div>
+
+        <div class="col-10" style="height: 40vh; background-color: white;">
+
+            <form action="{{ url_for('hello_world') }}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Test JSON</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" name="testinstructions" style="overflow-y: scroll; height: 15vh; resize: none;"></textarea>
+                </div>
+
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="validatedCustomFile" name="file">
+                    <label class="custom-file-label" for="validatedCustomFile">or choose JSON File</label>
+                </div>
+
+                <button class="btn btn-secondary" type="submit" style="margin-top: 5px;" onclick="addhtml()">Submit</button>
+
+            </form>
+
+        </div>
+
+        <div class="col-1"></div>
+
+        <div class="col-1"></div>
+
+        <div class="col-10" style="background-color: white; max-height: 100vh; overflow-y: scroll;">
+
+            {{ canvasstringinsert|safe }}
+
+        </div>
+
+        <div class="col-1"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    {{ recentdatas|safe }}
+
+</script>
+
+<script>
+
+    function addhtml()
+    {
+        x = document.getElementById('urlholder');
+        x.innerHTML += "<i  style='font-size:100px; color:rgba(16,16,255,0.2); border-color:rgba(16,,16,255,1.0);' class='fas fa-cog fa-spin'></i>";
+    }
+
+</script>
+
+
+</body>
+</html>
