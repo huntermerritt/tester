@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory, send_file
 from werkzeug.utils import secure_filename
 import requests
 import json
@@ -34,22 +34,44 @@ def hello_world():
             print(textareajson)
             jsondict = json.loads(textareajson)
 
+            graphstring = ""
+            canvasstring = ""
+            urlstring = ""
+            copyjson = "x = document.getElementById('exampleFormControlTextarea1'); x.value = \"{ 'Test Results': ["
+            filecontents = "{ 'Test Results': ["
+
             for item in jsondict['tests']:
-                liststr += "<li class='list-group-item'><em class='btn btn-primary'>URL</em> " + item['url'] + " <em class='btn btn-success'>  " + item['method'] + "  </em> requests = " + item['requestnumber'] + " <em class='btn btn-warning' style='color: white;'> Time </em>" + item['time'] + " seconds</li>"
-                testobject.addjob(testname=item['testname'], url=item['url'], iterations=item['requestnumber'], timewait=item['time'])
+                print("ITEM")
+                print(item)
 
-            retval = testobject.starttests()
+                testresults = Tester()
+                testresults.addjob(item['testname'], item['url'], item['time'], item['requestnumber'])
+                testresults = testresults.starttests()
+                print(testresults)
+                print(type(testresults))
+                copyjson += str(testresults) + ","
+                filecontents += str(testresults) + ","
+                datainsert = getrecentdata(testresults)
 
-            print(retval)
+                # graph inserts
+                graphstring += "var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'aqua', 'violet']; var ctx = document.getElementById('" + \
+                               item[
+                                   'testname'] + "').getContext('2d'); var myChart = new Chart(ctx, { type: 'line', data: { " + datainsert + ", borderWidth: 1 }] }, options: { scales: { yAxes: [{ ticks: { beginAtZero:true } }] } } });"
+                # list inserts
+                urlstring += "<li class='list-group-item'><em class='btn btn-primary'>URL</em> " + item[
+                    'url'] + " <em class='btn btn-success'> " + item['method'] + " </em>requests = " + item[
+                                 'requestnumber'] + " <em class='btn btn-warning' style='color: white;'> Time </em> " + \
+                             item['time'] + " seconds  <em class='btn btn-danger'> " + item['testname'] + " </em></li>"
+                # canvas inserts
+                canvasstring += "<canvas id='" + item[
+                    'testname'] + "' style='max-height: 100%; max-width: 100%;'></canvas>"
 
-            data = {"labels": [], "times": [], "testnames": []}
-
-            for item in retval['Results']:
-                data['labels'].append(item['starttime'])
-                data['times'].append(item['totaltime'])
-                data['testnames'].append(item['testname'])
-
-            graphportionn = getrecentdata(data)
+            copyjson = copyjson[:-1]
+            filecontents = filecontents[:-1]
+            copyjson += '] }\";'
+            filecontents += '] }'
+            return render_template('index.html', listed=urlstring, recentdatas=graphstring,
+                                   canvasstringinsert=canvasstring, copyjson=copyjson, fileret=filecontents)
 
 
         file = request.files['file']
@@ -66,11 +88,11 @@ def hello_world():
 
             jsondict = json.loads(filestr)
 
-
-
             graphstring = ""
             canvasstring = ""
             urlstring = ""
+            copyjson = "x = document.getElementById('exampleFormControlTextarea1'); x.value = \"{ 'Test Results': ["
+            filecontents = "{ 'Test Results': ["
 
             for item in jsondict['tests']:
                 print("ITEM")
@@ -79,18 +101,32 @@ def hello_world():
                 testresults = Tester()
                 testresults.addjob(item['testname'], item['url'], item['time'], item['requestnumber'])
                 testresults = testresults.starttests()
-
+                print(testresults)
+                print(type(testresults))
+                copyjson += str(testresults) + ","
+                filecontents += str(testresults) + ","
                 datainsert = getrecentdata(testresults)
 
                 # graph inserts
-                graphstring += "var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'aqua', 'violet']; var ctx = document.getElementById('" + item['testname'] + "').getContext('2d'); var myChart = new Chart(ctx, { type: 'line', data: { " + datainsert + ", borderWidth: 1 }] }, options: { scales: { yAxes: [{ ticks: { beginAtZero:true } }] } } });"
+                graphstring += "var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'aqua', 'violet']; var ctx = document.getElementById('" + \
+                               item[
+                                   'testname'] + "').getContext('2d'); var myChart = new Chart(ctx, { type: 'line', data: { " + datainsert + ", borderWidth: 1 }] }, options: { scales: { yAxes: [{ ticks: { beginAtZero:true } }] } } });"
                 # list inserts
-                urlstring += "<li class='list-group-item'><em class='btn btn-primary'>URL</em> " + item['url'] + " <em class='btn btn-success'> " + item['method'] + " </em>requests = " + item['requestnumber'] + " <em class='btn btn-warning' style='color: white;'> Time </em> " + item['time'] + " seconds  <em class='btn btn-danger'> " + item['testname'] + " </em></li>"
+                urlstring += "<li class='list-group-item'><em class='btn btn-primary'>URL</em> " + item[
+                    'url'] + " <em class='btn btn-success'> " + item['method'] + " </em>requests = " + item[
+                                 'requestnumber'] + " <em class='btn btn-warning' style='color: white;'> Time </em> " + \
+                             item['time'] + " seconds  <em class='btn btn-danger'> " + item['testname'] + " </em></li>"
                 # canvas inserts
-                canvasstring += "<canvas id='" + item['testname'] + "' style='max-height: 100%; max-width: 100%;'></canvas>"
+                canvasstring += "<canvas id='" + item[
+                    'testname'] + "' style='max-height: 100%; max-width: 100%;'></canvas>"
 
+            copyjson = copyjson[:-1]
+            filecontents = filecontents[:-1]
+            copyjson += '] }\";'
+            filecontents += '] }'
+            return render_template('index.html', listed=urlstring, recentdatas=graphstring,
+                                   canvasstringinsert=canvasstring, copyjson=copyjson, fileret=filecontents)
 
-            return render_template('index.html', listed=urlstring, recentdatas=graphstring, canvasstringinsert=canvasstring)
 
     return render_template('index.html', listed="")
 
@@ -104,6 +140,23 @@ def gethive():
     time = ""
 
     return 'temp'
+
+@app.route('/api/testdownload', methods=['GET', 'POST'])
+def getdata():
+
+    if request.form['filetxt'] != '':
+        x = None
+
+        try:
+            x = open('/Users/Hunter/PycharmProjects/pyhive/testresults.json', 'w')
+        except:
+            x = open('/Users/Hunter/PycharmProjects/pyhive/testresults.json', 'w+')
+
+        x.write(request.form['filetxt'])
+        x.close()
+        return send_from_directory('/Users/Hunter/PycharmProjects/pyhive', 'testresults.json')
+
+    return render_template('index.html')
 
 def createlinetxt(ids, inserts):
 

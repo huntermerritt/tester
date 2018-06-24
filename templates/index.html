@@ -58,6 +58,10 @@
 
         <div class="col-10" style="height: 45vh; background-color: white; text-align: center;" id="urlholder">
             <ul class="list-group" style="max-height: 100%; overflow-y: scroll; text-align: left;">
+                <form action="{{ url_for('getdata') }}" method="post">
+                    <li class='list-group-item'><button class='btn btn-primary' type="submit">Download Results</button></li>
+                    <input type="hidden" name="filetxt" value="{{ fileret|safe }}">
+                </form>
                 {{ listed|safe }}
             </ul>
 
@@ -91,7 +95,7 @@
 
         <div class="col-1"></div>
 
-        <div class="col-10" style="background-color: white; max-height: 100vh; overflow-y: scroll;">
+        <div class="col-10" style="background-color: white;">
 
             {{ canvasstringinsert|safe }}
 
@@ -115,8 +119,14 @@
     function addhtml()
     {
         x = document.getElementById('urlholder');
-        x.innerHTML += "<i  style='font-size:100px; color:rgba(16,16,255,0.2); border-color:rgba(16,,16,255,1.0);' class='fas fa-cog fa-spin'></i>";
+        x.innerHTML += "<i  style='font-size:100px; color:rgba(16,16,255,0.2); border-color:rgba(16,,16,255,1.0);' class='fas fa-cog fa-spin'></i><p>Your tests are currently running.</p>";
     }
+
+</script>
+
+<script>
+
+    {{ copyjson|safe }}
 
 </script>
 
